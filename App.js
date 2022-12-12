@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import MovieId from "./app/screens/movie";
+import HomeScreen from "./app/screens/HomeScreen";
 
 export default function App() {
-  return <MovieId />;
+  return <HomeScreen />;
 }
