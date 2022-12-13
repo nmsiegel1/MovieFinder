@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from "react";
 import {
+  Image,
+  FlatList,
   StyleSheet,
   Text,
-  View,
   TextInput,
-  SafeAreaView,
-  FlatList,
   TouchableOpacity,
-  Image,
-  Form,
+  View,
 } from "react-native";
 import axios from "axios";
-import { Formik } from "formik";
 import { FontAwesome } from "@expo/vector-icons";
 
 import colors from "../config/colors";
@@ -25,11 +22,11 @@ function HomeScreen() {
     topRatedMovies: null,
   });
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("Find a movie...");
+  const [searchInput, setSearchInput] = useState();
   const apiKey = "33a7326d941e6de613d285854b52eb67";
   const apiReq = async () => {
     const resSearchedMovies = await axios(
-      `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=Batman`
+      `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${searchInput}`
     );
     const respNowPlaying = await axios(
       `https://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}&language=en-US&page=1`
@@ -57,27 +54,26 @@ function HomeScreen() {
       <View>
         <Text style={styles.title}>Movie Finder</Text>
       </View>
-      <Formik
-        initialValues={{ search: "Find a movie..." }}
-        onSubmit={(values) => console.log(values)}
-      >
-        <View style={styles.input}>
-          <FontAwesome
-            name="search"
-            size={24}
-            color={colors.black}
-            style={styles.icon}
-          />
-          <TextInput
-            placeholder="Find a movie..."
-            placeholderTextColor={colors.black}
-            style={styles.inputText}
-          ></TextInput>
-        </View>
-      </Formik>
+
+      <View style={styles.input}>
+        <FontAwesome
+          name="search"
+          size={24}
+          color={colors.black}
+          style={styles.icon}
+        />
+        <TextInput
+          placeholder="Find a movie..."
+          style={styles.inputText}
+          onChangeText={(text) => setSearchInput(text)}
+          name="search"
+        ></TextInput>
+      </View>
+      <TouchableOpacity onPress={apiReq} style={styles.button}>
+        <Text style={styles.buttontText}>Submit</Text>
+      </TouchableOpacity>
       <View>
         {loading ? (
-          //
           <Text>Loading</Text>
         ) : (
           <View>
@@ -164,6 +160,21 @@ function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  button: {
+    backgroundColor: colors.secondary,
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    width: "100%",
+    marginVertical: 5,
+  },
+  buttontText: {
+    color: colors.white,
+    fontSize: 12,
+    textTransform: "uppercase",
+    fontWeight: "bold",
+  },
   container: {
     flex: 1,
     backgroundColor: colors.primary,
@@ -196,13 +207,7 @@ const styles = StyleSheet.create({
   },
   inputText: {
     fontSize: 18,
-  },
-  title: {
-    color: colors.white,
-    fontSize: 32,
-    fontWeight: "700",
-    textAlign: "center",
-    marginBottom: 20,
+    color: colors.black,
   },
   subtitle: {
     fontSize: 20,
@@ -210,6 +215,13 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginLeft: 20,
     fontWeight: "bold",
+  },
+  title: {
+    color: colors.white,
+    fontSize: 32,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 20,
   },
 });
 
