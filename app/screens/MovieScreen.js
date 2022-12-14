@@ -1,29 +1,36 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import axios from "axios";
+import { TMDB_API_KEY } from "@env";
 
 import colors from "../config/colors";
 import Screen from "../components/Screen";
 
 function MovieScreen({ route, navigation }) {
-  const id = "300";
+  const { id } = route.params;
+
   const [selectedMovie, setSelectedMovie] = useState();
   const [loading, setLoading] = useState(true);
 
-  const apiKey = "33a7326d941e6de613d285854b52eb67";
+  const apiKey = TMDB_API_KEY;
 
   const apiReq = async () => {
     const respSelectedMovie = await axios(
-      `https://api.themoviedb.org/3/movie/329?api_key=33a7326d941e6de613d285854b52eb67&language=en-US`
+      `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=en-US`
     );
-    console.log("response", respSelectedMovie.data.title);
     setSelectedMovie(respSelectedMovie.data);
 
     if (loading) {
       setLoading(false);
     }
   };
-  // console.log("selectedMovie", selectedMovie.title);
 
   useEffect(() => {
     apiReq();
@@ -53,9 +60,9 @@ function MovieScreen({ route, navigation }) {
                 {selectedMovie.release_date.substr(0, 4)})
               </Text>
             </View>
-            <View>
+            <ScrollView>
               <Text style={styles.description}>{selectedMovie.overview}</Text>
-            </View>
+            </ScrollView>
           </View>
         </View>
       )}

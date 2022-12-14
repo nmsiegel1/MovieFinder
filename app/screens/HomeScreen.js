@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import {
   Image,
   FlatList,
-  Modal,
   StyleSheet,
   Text,
   TextInput,
@@ -14,7 +13,7 @@ import axios from "axios";
 import { FontAwesome } from "@expo/vector-icons";
 
 import colors from "../config/colors";
-// import { TMDB_API_KEY } from "@env";
+import { TMDB_API_KEY } from "@env";
 import Screen from "../components/Screen";
 
 function HomeScreen({ navigation }) {
@@ -22,12 +21,12 @@ function HomeScreen({ navigation }) {
     searchedMovies: null,
     nowPlaying: null,
     topRatedMovies: null,
-    // selectedMovie: null,
   });
   const [loading, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState();
+  const [showSearch, setShowSearch] = useState(false);
 
-  const apiKey = "33a7326d941e6de613d285854b52eb67";
+  const apiKey = TMDB_API_KEY;
   const apiReq = async () => {
     const resSearchedMovies = await axios(
       `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${searchInput}`
@@ -38,15 +37,11 @@ function HomeScreen({ navigation }) {
     const respTopRatedMovies = await axios(
       `https://api.themoviedb.org/3/movie/top_rated?api_key=${apiKey}&language=en-US`
     );
-    // const respSelectedMovie = await axios(
-    //   `https://api.themoviedb.org/3/movie/300?api_key=33a7326d941e6de613d285854b52eb67&language=en-US`
-    // );
 
     setData({
       searchedMovies: resSearchedMovies.data.results,
       nowPlaying: respNowPlaying.data.results,
       topRatedMovies: respTopRatedMovies.data.results,
-      // selectedMovie: respSelectedMovie.data,
     });
 
     if (loading) {
@@ -57,6 +52,11 @@ function HomeScreen({ navigation }) {
   useEffect(() => {
     apiReq();
   }, []);
+
+  // const displaySearch = () => {
+  //   apiReq();
+  //   setShowSearch(true);
+  // };
 
   return (
     <Screen style={styles.container}>
@@ -79,7 +79,13 @@ function HomeScreen({ navigation }) {
             name="search"
           ></TextInput>
         </View>
-        <TouchableOpacity onPress={apiReq} style={styles.button}>
+        <TouchableOpacity
+          onPress={() => {
+            apiReq();
+            setShowSearch(true);
+          }}
+          style={styles.button}
+        >
           <Text style={styles.buttontText}>Submit</Text>
         </TouchableOpacity>
         <View>
@@ -87,43 +93,49 @@ function HomeScreen({ navigation }) {
             <Text>Loading</Text>
           ) : (
             <View>
-              <Text style={styles.subtitle}>
-                Search
-                <Text style={styles.hightlight}> Results</Text>
-              </Text>
-              <View>
-                {data.searchedMovies.length == 0 ? (
-                  <Text style={styles.notFound}>
-                    Sorry, we couldn't find that movie. Try again.
+              {showSearch == true ? (
+                <View>
+                  <Text style={styles.subtitle}>
+                    Search
+                    <Text style={styles.hightlight}> Results</Text>
                   </Text>
-                ) : (
-                  <FlatList
-                    showsHorizontalScrollIndicator={false}
-                    style={styles.imageMargin}
-                    data={data.searchedMovies}
-                    horizontal
-                    renderItem={(element) => {
-                      return (
-                        <TouchableOpacity
-                          onPress={() =>
-                            navigation.navigate("MovieScreen", {
-                              id: element.item.id,
-                            })
-                          }
-                        >
-                          <Image
-                            style={styles.image}
-                            source={{
-                              uri: `https://image.tmdb.org/t/p/w500${element.item.poster_path}`,
-                            }}
-                          />
-                        </TouchableOpacity>
-                      );
-                    }}
-                    keyExtractor={(item) => item.id}
-                  />
-                )}
-              </View>
+                  <View>
+                    {data.searchedMovies.length == 0 ? (
+                      <Text style={styles.notFound}>
+                        Sorry, we couldn't find that movie. Try again.
+                      </Text>
+                    ) : (
+                      <FlatList
+                        showsHorizontalScrollIndicator={false}
+                        style={styles.imageMargin}
+                        data={data.searchedMovies}
+                        horizontal
+                        renderItem={(element) => {
+                          return (
+                            <TouchableOpacity
+                              onPress={() =>
+                                navigation.navigate("MovieScreen", {
+                                  id: element.item.id,
+                                })
+                              }
+                            >
+                              <Image
+                                style={styles.image}
+                                source={{
+                                  uri: `https://image.tmdb.org/t/p/w500${element.item.poster_path}`,
+                                }}
+                              />
+                            </TouchableOpacity>
+                          );
+                        }}
+                        keyExtractor={(item) => item.id}
+                      />
+                    )}
+                  </View>
+                </View>
+              ) : (
+                <View></View>
+              )}
               <View>
                 <Text style={styles.subtitle}>
                   In
