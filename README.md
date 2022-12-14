@@ -42,6 +42,8 @@ The user can search for a particular movie or scroll through a list of movies cu
 
 ## Application
 
+https://expo.dev/@nmsiegel1/MovieFinder
+
 ## Screenshots
 
 ![IMG_5409](https://user-images.githubusercontent.com/102773691/207700541-9795623c-6860-4743-a0cd-b270eade4cf0.jpg)
