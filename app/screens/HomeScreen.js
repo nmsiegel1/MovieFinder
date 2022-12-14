@@ -45,6 +45,7 @@ function HomeScreen() {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     apiReq();
   }, []);
@@ -78,29 +79,35 @@ function HomeScreen() {
         ) : (
           <View>
             <Text style={styles.subtitle}>
-              Searched
-              <Text style={styles.hightlight}> Movies</Text>
+              Search
+              <Text style={styles.hightlight}> Results</Text>
             </Text>
             <View>
-              <FlatList
-                showsHorizontalScrollIndicator={false}
-                style={styles.imageMargin}
-                data={data.searchedMovies}
-                horizontal
-                renderItem={(element) => {
-                  return (
-                    <TouchableOpacity>
-                      <Image
-                        style={styles.image}
-                        source={{
-                          uri: `https://image.tmdb.org/t/p/w500${element.item.poster_path}`,
-                        }}
-                      />
-                    </TouchableOpacity>
-                  );
-                }}
-                keyExtractor={(item) => item.id}
-              />
+              {data.searchedMovies.length == 0 ? (
+                <Text style={styles.notFound}>
+                  Sorry, we couldn't find that movie. Try again.
+                </Text>
+              ) : (
+                <FlatList
+                  showsHorizontalScrollIndicator={false}
+                  style={styles.imageMargin}
+                  data={data.searchedMovies}
+                  horizontal
+                  renderItem={(element) => {
+                    return (
+                      <TouchableOpacity>
+                        <Image
+                          style={styles.image}
+                          source={{
+                            uri: `https://image.tmdb.org/t/p/w500${element.item.poster_path}`,
+                          }}
+                        />
+                      </TouchableOpacity>
+                    );
+                  }}
+                  keyExtractor={(item) => item.id}
+                />
+              )}
             </View>
             <View>
               <Text style={styles.subtitle}>
@@ -129,7 +136,7 @@ function HomeScreen() {
             </View>
             <View style={{ marginTop: 15 }}>
               <Text style={styles.subtitle}>
-                Top
+                Top Rated
                 <Text style={styles.hightlight}> Movies</Text>
               </Text>
               <FlatList
@@ -208,6 +215,12 @@ const styles = StyleSheet.create({
   inputText: {
     fontSize: 18,
     color: colors.black,
+  },
+  notFound: {
+    alignSelf: "center",
+    paddingTop: 25,
+    color: colors.white,
+    fontSize: 16,
   },
   subtitle: {
     fontSize: 20,

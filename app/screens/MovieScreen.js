@@ -12,13 +12,13 @@ function MovieScreen(props) {
   const apiKey = "33a7326d941e6de613d285854b52eb67";
   const apiReq = async () => {
     const resSelectedMovie = await axios(
-      `https://api.themoviedb.org/3/movie/200?api_key=${apiKey}`
+      `https://api.themoviedb.org/3/movie/100?api_key=${apiKey}`
     );
     setData({
       selectedMovie: resSelectedMovie.data,
     });
-    console.log(data.selectedMovie);
   };
+  console.log(data.selectedMovie);
 
   useEffect(() => {
     apiReq();
@@ -41,8 +41,8 @@ function MovieScreen(props) {
           </View>
           <View>
             <Text style={styles.rating}>
-              ★ {Number(data.selectedMovie.vote_average).toFixed(1)} |
-              {data.selectedMovie.release_date}
+              ★ {Number(data.selectedMovie.vote_average).toFixed(1)} | (
+              {data.selectedMovie.release_date.substr(0, 4)})
             </Text>
           </View>
           <View>
