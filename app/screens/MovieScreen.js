@@ -11,6 +11,7 @@ import axios from "axios";
 import { TMDB_API_KEY } from "@env";
 
 import colors from "../config/colors";
+import Loader from "../components/Loader";
 import Screen from "../components/Screen";
 
 function MovieScreen({ route, navigation }) {
@@ -22,11 +23,14 @@ function MovieScreen({ route, navigation }) {
   const apiKey = TMDB_API_KEY;
 
   const apiReq = async () => {
-    const respSelectedMovie = await axios(
-      `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=en-US`
-    );
-    setSelectedMovie(respSelectedMovie.data);
-
+    try {
+      const respSelectedMovie = await axios(
+        `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=en-US`
+      );
+      setSelectedMovie(respSelectedMovie.data);
+    } catch (err) {
+      console.log(err);
+    }
     if (loading) {
       setLoading(false);
     }
@@ -39,7 +43,7 @@ function MovieScreen({ route, navigation }) {
   return (
     <Screen style={styles.container}>
       {loading ? (
-        <Text>Loading</Text>
+        <Loader />
       ) : (
         <View style={styles.card}>
           <View>

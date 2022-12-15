@@ -27,6 +27,7 @@ Packages/Extras
 
 - react navigation/native
 - Axios
+- React Native Animated Loader
 
 ## Install
 

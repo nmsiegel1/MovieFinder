@@ -2,19 +2,20 @@ import React, { useState, useEffect } from "react";
 import {
   Image,
   FlatList,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  ScrollView,
 } from "react-native";
 import axios from "axios";
 import { FontAwesome } from "@expo/vector-icons";
 
 import colors from "../config/colors";
-import { TMDB_API_KEY } from "@env";
+import Loader from "../components/Loader";
 import Screen from "../components/Screen";
+import { TMDB_API_KEY } from "@env";
 
 function HomeScreen({ navigation }) {
   const [data, setData] = useState({
@@ -28,21 +29,24 @@ function HomeScreen({ navigation }) {
 
   const apiKey = TMDB_API_KEY;
   const apiReq = async () => {
-    const resSearchedMovies = await axios(
-      `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${searchInput}`
-    );
-    const respNowPlaying = await axios(
-      `https://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}&language=en-US&page=1`
-    );
-    const respTopRatedMovies = await axios(
-      `https://api.themoviedb.org/3/movie/top_rated?api_key=${apiKey}&language=en-US`
-    );
-
-    setData({
-      searchedMovies: resSearchedMovies.data.results,
-      nowPlaying: respNowPlaying.data.results,
-      topRatedMovies: respTopRatedMovies.data.results,
-    });
+    try {
+      const resSearchedMovies = await axios(
+        `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${searchInput}`
+      );
+      const respNowPlaying = await axios(
+        `https://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}&language=en-US&page=1`
+      );
+      const respTopRatedMovies = await axios(
+        `https://api.themoviedb.org/3/movie/top_rated?api_key=${apiKey}&language=en-US`
+      );
+      setData({
+        searchedMovies: resSearchedMovies.data.results,
+        nowPlaying: respNowPlaying.data.results,
+        topRatedMovies: respTopRatedMovies.data.results,
+      });
+    } catch (err) {
+      console.log(err);
+    }
 
     if (loading) {
       setLoading(false);
@@ -52,11 +56,6 @@ function HomeScreen({ navigation }) {
   useEffect(() => {
     apiReq();
   }, []);
-
-  // const displaySearch = () => {
-  //   apiReq();
-  //   setShowSearch(true);
-  // };
 
   return (
     <Screen style={styles.container}>
@@ -90,7 +89,7 @@ function HomeScreen({ navigation }) {
         </TouchableOpacity>
         <View>
           {loading ? (
-            <Text>Loading</Text>
+            <Loader />
           ) : (
             <View>
               {showSearch == true ? (
